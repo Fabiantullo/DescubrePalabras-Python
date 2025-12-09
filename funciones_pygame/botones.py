@@ -1,4 +1,5 @@
 import pygame as pg
+import os
 #from eventos.manejo_eventos import pista_comida, pista_continente
 from logica_juego.funciones import generar_letra_random, activar_sonido, desactivar_sonido
 def dibujar_boton(boton: dict):
@@ -42,7 +43,7 @@ def boton_pistas(ventana: pg.Surface, fuente :tuple, color:str|tuple, color_fond
         list: Lista de botones
     """    
     lista = []
-    lista_path = [r"images\continente.webp",r"images\letras.jpg",r"images\comida.webp"]
+    lista_path = [os.path.join("images", "continente.webp"),os.path.join("images", "letras.jpg"),os.path.join("images", "comida.webp")]
     lista_acciones = [pista_continente,generar_letra_random,pista_comida]
     WINDOW_SIZE = ventana.get_size()
     posicion_y = 80
@@ -200,9 +201,9 @@ def crear_carteles (ventana:pg.surface,SIZE_WINDOW:tuple,fuentes:tuple) -> dict:
         dict: Diccionario con los carteles
     """    
     carteles = {}
-    carteles["pantalla_inicio"] = crear_boton(ventana,(0,0),(SIZE_WINDOW[0],SIZE_WINDOW[1]),"Bienvenido a Palabrini", fuentes["fuente_palabras"], "black", "white", imagen= r"images\fondo_pantalla_inicio.png")
-    carteles["Activar_Sonido"] = crear_boton(ventana,(400, 250),(50,50),"",None,"black","black",imagen= r"images\sonido_on.png", accion= activar_sonido)
-    carteles["Desactivar_Sonido"] = crear_boton(ventana,(400, 250),(50,50),"",None,"black","black",imagen= r"images\sonido_off.png", accion=desactivar_sonido)
+    carteles["pantalla_inicio"] = crear_boton(ventana,(0,0),(SIZE_WINDOW[0],SIZE_WINDOW[1]),"Bienvenido a Palabrini", fuentes["fuente_palabras"], "black", "white", imagen= os.path.join("images", "fondo_pantalla_inicio.png"))
+    carteles["Activar_Sonido"] = crear_boton(ventana,(400, 250),(50,50),"",None,"black","black",imagen= os.path.join("images", "sonido_on.png"), accion= activar_sonido)
+    carteles["Desactivar_Sonido"] = crear_boton(ventana,(400, 250),(50,50),"",None,"black","black",imagen= os.path.join("images", "sonido_off.png"), accion=desactivar_sonido)
     carteles["Desactivar_Sonido"]["Presionado"] = True
     carteles["cartel_usuario"]= crear_boton(ventana,(0,0),(SIZE_WINDOW[0],SIZE_WINDOW[1]),"Ingrese su nombre de usuario",("Arial", 40),"black",(164, 187, 254))
     carteles["jugar_otra_vez"] = crear_boton(ventana,(SIZE_WINDOW[0] / 2 - 150,0),(300,100),"Jugar otra vez",("Arial", 30),"black","salmon")

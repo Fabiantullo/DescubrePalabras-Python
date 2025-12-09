@@ -1,3 +1,4 @@
+import os
 import pygame as pg
 from funciones_pygame.funciones_logica import *
 from archivo.funciones_archivo import recuperar_puntuacion_mas_alta
@@ -224,7 +225,7 @@ def manejar_reiniciar_juego(carteles: pg.Surface, diccionario_partida:dict, even
         diccionario_partida["puntaje"] = [0]
         diccionario_rondas["tiempo_inicio"] = time.time()
         diccionario_partida["mayor_puntaje"],diccionario_partida["mayor_nombre"] = recuperar_puntuacion_mas_alta("puntuaciones.json")
-        lista_path = [r"images\continente.webp",r"images\letras.jpg",r"images\comida.webp"]
+        lista_path = [os.path.join("images", "continente.webp"),os.path.join("images", "letras.jpg"),os.path.join("images", "comida.webp")]
         
         
         for boton in lista_botones_pistas:

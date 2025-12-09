@@ -1,31 +1,12 @@
 import time
-from funciones_pygame.botones import *
-from funciones_pygame.funciones_logica import *
-from archivo.funciones_archivo import *
-
-def actualizar_interfaz(ventana:pg.surface, diccionario_partida:dict, diccionario_ronda: dict, fuentes: dict):
-    """Funcion que se encarga de actualizar la interfaz del juego
-
-    Args:
-        ventana (pg.surface): Ventana de pygame
-        diccionario_partida (dict): Diccionario de la partida
-        diccionario_ronda (dict): Diccionario de la ronda
-        fuentes (dict): Fuentes de pygame
-    """    
-    tiempo_actual = time.time() - diccionario_ronda["tiempo_inicio"]
-    ventana.fill((164, 187, 254))
-    high_score = crear_boton(ventana,(10,ventana.get_height()-100),(70,70),"", fuentes["fuente_palabras"], "black", (164, 187, 254), imagen= r"images\high-score.png")
-    high_score_variables = crear_boton(ventana,(70,ventana.get_height()-100),(150,50), f"{diccionario_partida["mayor_puntaje"]} {diccionario_partida["mayor_nombre"]}", fuentes["fuente_palabras"], "black", (164, 187, 254))
-    icono_puntuacion = crear_boton(ventana, (10, 10), (50, 50), "", fuentes["fuente_palabras"], "white", (164, 187, 254), imagen=r"images\puntuacion-mas-alta.png")
-    icono_tiempo = crear_boton(ventana, (10, 70), (50, 50), "", fuentes["fuente_palabras"], "white", "grey40", imagen=r"images\cronometro.png")
-    tiempo_actualizado = crear_boton(ventana, (60, 70), (100, 50), f"{tiempo_actual:.2f}", fuentes["fuente_palabras"], "black", (164, 187, 254))
-    puntuaje_actualizado = crear_boton(ventana, (70, 10), (50, 50), f"{sumar_lista(diccionario_partida['puntaje'])}", fuentes["fuente_palabras"], "black", (164, 187, 254))
-    dibujar_boton(icono_puntuacion)
-    dibujar_boton(icono_tiempo)
-    dibujar_boton(puntuaje_actualizado)
-    dibujar_boton(tiempo_actualizado)
-    dibujar_boton(high_score)
-    dibujar_boton(high_score_variables)
+import os
+import pygame as pg
+from funciones_pygame.botones import crear_boton, dibujar_boton, dibujar_lineas, dibujar_input
+from funciones_pygame.funciones_logica import verificar_perdio_gano, reiniciar_variables
+from funciones_pygame.interfaz import actualizar_interfaz, dibujar_botones_main, mostrar_estadisticas, mostrar_matriz_p
+from logica_juego.funciones import generar_palabras, generar_lista_matrices
+from archivo.funciones_archivo import guardar_puntuacion, sumar_lista
+from configs import SIZE_WINDOW
 
     
 def comprobar_estado_juego(diccionario_partida:dict, diccionario_ronda:dict, ventana:pg.surface, entrada:dict, palabras:dict, DIFICUTYS:list, carteles:dict, lista_boton_pistas:list, fuentes:dict, lista_botones_modos:list):
@@ -60,55 +41,6 @@ def comprobar_estado_juego(diccionario_partida:dict, diccionario_ronda:dict, ven
     else:
         dibujar_botones_main(ventana, diccionario_ronda, lista_boton_pistas, entrada, lista_botones_modos, fuentes)
 
-def mostrar_estadisticas(diccionario_partida:dict, ventana:pg.surface, carteles:dict, lista_boton_pistas:list, fuentes:dict,tiempo_total:int,puntaje_total:int):
-    """Funcion que se encarga de mostrar las estadisticas del jugador
-
-    Args:
-        diccionario_partida (dict): Diccionario con los datos de la partida
-        ventana (pg.surface): Ventana de pygame
-        carteles (dict): Diccionario con los carteles
-        lista_boton_pistas (list): Lista de botones de pistas
-        fuentes (dict): Fuentes de pygame
-        tiempo_total (int): Tiempo total de la partida
-        puntaje_total (int): Puntaje total de la partida
-    """    
-    
-    porcentaje = (diccionario_partida["cantidad_palabras_acertadas"][0] + diccionario_partida["cantidad_palabras_falladas"][0]) / diccionario_partida["cantidad_palabras_acertadas"][0]
-    estadisticas = f"""
-    Nombre: {diccionario_partida['nombre_usuario']}
-    Porcentaje victorias: {porcentaje * 100:.2f}%
-    Cantidad Victorias: {diccionario_partida['cantidad_palabras_acertadas'][0]}
-    Cantidad Derrotas: {diccionario_partida['cantidad_palabras_falladas'][0]}
-    Tiempo Total: {tiempo_total:.2f} segundos
-    Puntaje Total: {puntaje_total}
-    """
-    if diccionario_partida["bandera_puntuo_por_tiempo"]:
-        estadisticas += "\nGanaste 100 puntos por tiempo"
-    boton_estadisticas = crear_boton(ventana, (0, 0), (SIZE_WINDOW[0], SIZE_WINDOW[1]), "", ("Arial", 30), "grey", "lightskyblue2")
-    dibujar_boton(boton_estadisticas)
-    dibujar_lineas(ventana, estadisticas, 30, 100, ("arial",30), "black")
-    dibujar_boton(carteles["jugar_otra_vez"])
-    carteles["jugar_otra_vez"]["Presionado"] = True
-
-def dibujar_botones_main(ventana:pg.surface, diccionario_ronda:dict,lista_boton_pistas:list, entrada:dict, boton_modos:list, fuentes:dict):
-    """Funcion que se encarga de dibujar los botones de la pantalla principal
-
-    Args:
-        ventana (pg.surface): Ventana de pygame
-        diccionario_ronda (dict): Diccionario de la ronda
-        lista_boton_pistas (list): Lista de botones de pistas
-        entrada (dict): Diccionario con la entrada del usuario
-        boton_modos (list): Lista de botones de modos
-        fuentes (dict): Fuentes de pygame
-    """    
-    for boton in boton_modos:
-        dibujar_boton(boton)  
-    mostrar_matriz_p(ventana, diccionario_ronda["lista_matrices"][diccionario_ronda["indice_actual"]], fuentes["fuente_matriz"], "Black", "White", diccionario_ronda["lista_palabras"][diccionario_ronda["indice_actual"]])  
-    for boton in lista_boton_pistas:
-        dibujar_boton(boton)
-        pg.draw.rect(ventana, "navy", boton["rectangulo"], 2)  
-    pg.draw.rect(ventana, "aquamarine4", boton_modos[diccionario_ronda["indice_actual"]]["rectangulo"], 2)
-    dibujar_input(entrada)
     
 def crear_diccionario_partida(ventana:pg.surface):
     """Funcion que se encarga de crear el diccionario de la partida
@@ -148,11 +80,11 @@ def crear_diccionario_ronda(DIFICULTYS:list, palabras:dict, TRYS:int) -> dict:
         dict: Devuelve un diccionario con los datos de la ronda
     """    
     diccionario_ronda = {}
-    diccionario_ronda["lista_palabras"] = generar_palabras(DIFICUTYS , palabras)
-    diccionario_ronda["lista_matrices"] = generar_lista_matrices(DIFICUTYS, diccionario_ronda["lista_palabras"],TRYS)
-    diccionario_ronda["dificultad_actual"] = DIFICUTYS[0]
+    diccionario_ronda["lista_palabras"] = generar_palabras(DIFICULTYS , palabras)
+    diccionario_ronda["lista_matrices"] = generar_lista_matrices(DIFICULTYS, diccionario_ronda["lista_palabras"],TRYS)
+    diccionario_ronda["dificultad_actual"] = DIFICULTYS[0]
     diccionario_ronda["indice_actual"] = 0
-    diccionario_ronda["lista_intentos"] = [0] * len(DIFICUTYS)
+    diccionario_ronda["lista_intentos"] = [0] * len(DIFICULTYS)
     diccionario_ronda["sets_acertados"] = set()
     return diccionario_ronda
 

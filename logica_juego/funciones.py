@@ -1,7 +1,6 @@
 import random
 import pygame as pg
 
-#! ARREGLARLA RETURN CONDICIONAL
 def obtener_palabra(lista_palabras:list, dificultad:int) -> dict:
     """Obtiene una palabra de la lista de palabras que coincida con la dificultad
 
@@ -12,59 +11,47 @@ def obtener_palabra(lista_palabras:list, dificultad:int) -> dict:
     Returns:
         dict: Palabra obtenida
     """    
-    try:
-        palabra_obtenida = random.choice(lista_palabras)
-        if palabra_obtenida["caracteres"] == dificultad:
-            salida = palabra_obtenida
-        else:
-            salida = obtener_palabra(lista_palabras, dificultad)
-        return salida
-    except :
-        print("No se encontraron palabras con esa dificultad")
-        quit()            
-
-# def obtener_palabra(lista_palabras,dificultad):
-#     if len(lista_palabras) >0 :
-#         while True:
-#             palabra_obtenida = random.choice(lista_palabras)
-#             for i in range(len(lista_palabras)):
-#                 if palabra_obtenida["caracteres"] == dificultad:
-#                     salida = palabra_obtenida
-#                     break
-#                 else:
-#                     salida = None
-#     else:
-#         salida = None
-#     return salida
-
-
-
-# def obtener_palabra(lista_palabras, dificultad):
-#     # Filtrar palabras que coincidan con la dificultad
-#     palabras_filtradas = [palabra for palabra in lista_palabras if palabra["caracteres"] == dificultad]
+    candidatas = [p for p in lista_palabras if p["caracteres"] == dificultad]
+    if candidatas:
+        return random.choice(candidatas)
     
-#     if palabras_filtradas:
-#         # Elegir una palabra aleatoria de las filtradas
-#         return random.choice(palabras_filtradas)
-#     else:
-#         print("No se encontraron palabras con esa dificultad")
-#         return None  # O puedes lanzar una excepción si prefieres
+    print(f"No se encontraron palabras con dificultad {dificultad}")
+    return None            
 
-# def obtener_palabra(lista_palabras, dificultad, intentos=10):
-#     # Filtrar palabras que coincidan con la dificultad
-#     palabras_filtradas = [palabra for palabra in lista_palabras if palabra["caracteres"] == dificultad]
-    
-#     if palabras_filtradas:
-#         # Elegir una palabra aleatoria de las filtradas
-#         return random.choice(palabras_filtradas)
-#     else:
-#         # Si no se encontraron palabras, y todavía tenemos intentos
-#         if intentos > 0:
-#             print("No se encontraron palabras con esa dificultad. Intentando de nuevo...")
-#             return obtener_palabra(lista_palabras, dificultad, intentos - 1)
-#         else:
-#             print("No se encontraron palabras con esa dificultad después de varios intentos.")
-#             return None  # O lanzar una excepción si prefieres
+def generar_palabras(dificultad:list, diccionario_palabras: dict) -> list:
+    """Funcion que se encarga de generar una lista de palabras
+
+    Args:
+        dificultad (list): Lista de dificultades
+        diccionario_palabras (dict): Diccionario con las palabras
+
+    Returns:
+        list: Lista de palabras
+    """    
+    lista_palabras = []
+    for i in range(len(dificultad)):
+        palabra_generada = obtener_palabra(diccionario_palabras,dificultad[i])
+        lista_palabras.append(palabra_generada)
+        
+    return lista_palabras
+
+def generar_lista_matrices (dificultad:list ,lista_palabras: list,intentos:int) -> list:
+    """Funcion que se encarga de generar una lista de matrices
+
+    Args:
+        dificultad (list): Lista de dificultades
+        lista_palabras (list): Lista de palabras
+        intentos (int): Cantidad de intentos
+
+    Returns:
+        list: Lista de matrices
+    """    
+    lista_matrices = []
+    for i in range(len(dificultad)):
+        matriz = generar_matriz(lista_palabras[i],intentos)
+        lista_matrices.append(matriz)
+    return lista_matrices
+
 def generar_matriz(palabra_obtenida: dict, intentos:int) -> list:
     """Genera una matriz de la palabra obtenida
     
@@ -80,7 +67,6 @@ def generar_matriz(palabra_obtenida: dict, intentos:int) -> list:
         matriz_temporal = ["_"] * palabra_obtenida["caracteres"]
         matriz.append(matriz_temporal)
     return matriz
-
 
 def modificar_puntuacion_nuevo(diccionario_ronda: dict,
                                lista_puntuacion: list) -> int:
@@ -104,7 +90,6 @@ def modificar_puntuacion_nuevo(diccionario_ronda: dict,
                     puntuacion -= lista_puntuacion[i][2] * intentos
     return puntuacion
 
-      # generar_letra_random(diccionario_rondas["lista_palabras"][diccionario_rondas["indice_actual"]], diccionario_rondas["lista_matrices"][diccionario_rondas["indice_actual"]], diccionario_rondas["lista_intentos"][diccionario_rondas["indice_actual"]], diccionario_rondas["sets_acertados"])
 def generar_letra_random(ventana:pg.Surface, diccionario_rondas:dict, fuente:tuple) -> None:  
     """Genera una letra random en la matriz
 
@@ -197,5 +182,3 @@ def desactivar_sonido(diccionario_partida:dict, carteles:dict):
     diccionario_partida["sonido"] = False
     carteles["Activar_Sonido"]["Presionado"] = False
     carteles["Desactivar_Sonido"]["Presionado"] = True
-    
-
