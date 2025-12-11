@@ -137,7 +137,7 @@ def manejar_ayuda(diccionario_partida:dict,ventana:pg.surface,carteles:dict,fuen
         dibujar_lineas(ventana, explicacion, 25, SIZE_WINDOW[1] / 2 - 200, fuentes["fuente_palabras"], "black")
         dibujar_boton(carteles["boton_volver"])
         
-def manejar_juego(diccionario_partida:dict,ventana:pg.surface,diccionario_ronda:dict,fuentes:dict,entrada:dict,palabras:dict,DIFICULTYS:list,carteles:dict, lista_boton_pistas:list, boton_modos:list):
+def manejar_juego(diccionario_partida:dict,ventana:pg.surface,diccionario_ronda:dict,fuentes:dict,entrada:dict,palabras:dict,DIFICUTYS:list,carteles:dict, lista_boton_pistas:list, boton_modos:list):
     """Funcion que se encarga de manejar el juego
 
     Args:
@@ -147,7 +147,7 @@ def manejar_juego(diccionario_partida:dict,ventana:pg.surface,diccionario_ronda:
         fuentes (dict): Fuentes de pygame
         entrada (dict): Diccionario con la entrada del usuario
         palabras (dict): Diccionario con las palabras
-        DIFICULTYS (list): Lista de dificultades
+        DIFICUTYS (list): Lista de dificultades
         carteles (dict): Diccionario con los carteles
         lista_boton_pistas (list): Lista de botones de pistas
         boton_modos (list): Lista de botones de modos
