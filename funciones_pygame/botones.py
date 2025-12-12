@@ -2,6 +2,7 @@ import pygame as pg
 import os
 #from eventos.manejo_eventos import pista_comida, pista_continente
 from logica_juego.funciones import generar_letra_random, activar_sonido, desactivar_sonido
+from configs import PISTAS_IMAGENES
 def dibujar_boton(boton: dict):
     boton["pantalla"].blit(boton["superficie"], boton["rectangulo"])
 
@@ -43,13 +44,12 @@ def boton_pistas(ventana: pg.Surface, fuente :tuple, color:str|tuple, color_fond
         list: Lista de botones
     """    
     lista = []
-    lista_path = [os.path.join("images", "continente.webp"),os.path.join("images", "letras.jpg"),os.path.join("images", "comida.webp")]
     lista_acciones = [pista_continente,generar_letra_random,pista_comida]
     WINDOW_SIZE = ventana.get_size()
     posicion_y = 80
     indice = 0
     for elemento in pistas:
-        boton = crear_boton(ventana, (WINDOW_SIZE[0] - 180, posicion_y), (180, 100), "", fuente, color, color_fondo,imagen=lista_path[indice])
+        boton = crear_boton(ventana, (WINDOW_SIZE[0] - 180, posicion_y), (180, 100), "", fuente, color, color_fondo,imagen=PISTAS_IMAGENES[indice])
         boton["usos"] = pistas[elemento]
         boton["accion"] = lista_acciones[indice]
         indice += 1

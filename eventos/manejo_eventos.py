@@ -2,6 +2,7 @@ import os
 import pygame as pg
 from funciones_pygame.funciones_logica import *
 from archivo.funciones_archivo import recuperar_puntuacion_mas_alta
+from configs import PISTAS_IMAGENES
 
 
 def manejar_eventos(ventana: pg.Surface, boton_modos: list, entrada: dict, diccionario_ronda:dict, diccionario_partida:dict, palabras:dict, lista_botones_pistas:list[dict], carteles: dict[dict], MOVE_RECT_EVENT: pg.event, direccion: list[int], velocidad: list[int],evento_post: pg.event) -> bool:
@@ -225,13 +226,12 @@ def manejar_reiniciar_juego(carteles: pg.Surface, diccionario_partida:dict, even
         diccionario_partida["puntaje"] = [0]
         diccionario_rondas["tiempo_inicio"] = time.time()
         diccionario_partida["mayor_puntaje"],diccionario_partida["mayor_nombre"] = recuperar_puntuacion_mas_alta("puntuaciones.json")
-        lista_path = [os.path.join("images", "continente.webp"),os.path.join("images", "letras.jpg"),os.path.join("images", "comida.webp")]
         
         
         for boton in lista_botones_pistas:
             boton["usos"] = 1
             boton["Presionado"] = False
-            img = pg.image.load(lista_path[lista_botones_pistas.index(boton)])
+            img = pg.image.load(PISTAS_IMAGENES[lista_botones_pistas.index(boton)])
             boton["superficie"] = pg.transform.scale(img,boton["dimension"])
             
         carteles["jugar_otra_vez"]["Presionado"] = False
