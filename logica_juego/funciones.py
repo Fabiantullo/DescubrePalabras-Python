@@ -161,6 +161,18 @@ def validar_indice_en_lista(indice: int, lista: set) -> bool:
             validacion = False
     return validacion
 
+def toggle_sonido(diccionario_partida:dict, carteles:dict, activar:bool):
+    """Activa o desactiva el sonido
+
+    Args:
+        diccionario_partida (dict): Diccionario con los datos de la partida
+        carteles (dict): Diccionario con los carteles
+        activar (bool): True para activar, False para desactivar
+    """    
+    diccionario_partida["sonido"] = activar
+    carteles["Activar_Sonido"]["Presionado"] = activar
+    carteles["Desactivar_Sonido"]["Presionado"] = not activar
+
 def activar_sonido(diccionario_partida:dict, carteles:dict):
     """Activa el sonido
 
@@ -168,9 +180,7 @@ def activar_sonido(diccionario_partida:dict, carteles:dict):
         diccionario_partida (dict): Diccioanrio con los datos de la partida
         carteles (dict): Diccionario con los carteles
     """    
-    diccionario_partida["sonido"] = True
-    carteles["Activar_Sonido"]["Presionado"] = True
-    carteles["Desactivar_Sonido"]["Presionado"] = False
+    toggle_sonido(diccionario_partida, carteles, True)
 
 def desactivar_sonido(diccionario_partida:dict, carteles:dict):
     """Desactiva el sonido
@@ -179,6 +189,4 @@ def desactivar_sonido(diccionario_partida:dict, carteles:dict):
         diccionario_partida (dict): Diccionario con los datos de la partida
         carteles (dict): Diccionario con los carteles
     """    
-    diccionario_partida["sonido"] = False
-    carteles["Activar_Sonido"]["Presionado"] = False
-    carteles["Desactivar_Sonido"]["Presionado"] = True
+    toggle_sonido(diccionario_partida, carteles, False)

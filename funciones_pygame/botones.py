@@ -2,6 +2,7 @@ import pygame as pg
 import os
 #from eventos.manejo_eventos import pista_comida, pista_continente
 from logica_juego.funciones import generar_letra_random, activar_sonido, desactivar_sonido
+from configs import PISTAS_IMAGENES
 def dibujar_boton(boton: dict):
     boton["pantalla"].blit(boton["superficie"], boton["rectangulo"])
 
@@ -43,13 +44,12 @@ def boton_pistas(ventana: pg.Surface, fuente :tuple, color:str|tuple, color_fond
         list: Lista de botones
     """    
     lista = []
-    lista_path = [os.path.join("images", "continente.webp"),os.path.join("images", "letras.jpg"),os.path.join("images", "comida.webp")]
     lista_acciones = [pista_continente,generar_letra_random,pista_comida]
     WINDOW_SIZE = ventana.get_size()
     posicion_y = 80
     indice = 0
     for elemento in pistas:
-        boton = crear_boton(ventana, (WINDOW_SIZE[0] - 180, posicion_y), (180, 100), "", fuente, color, color_fondo,imagen=lista_path[indice])
+        boton = crear_boton(ventana, (WINDOW_SIZE[0] - 180, posicion_y), (180, 100), "", fuente, color, color_fondo,imagen=PISTAS_IMAGENES[indice])
         boton["usos"] = pistas[elemento]
         boton["accion"] = lista_acciones[indice]
         indice += 1
@@ -163,6 +163,20 @@ def crear_boton(ventana: pg.Surface, posicion:tuple, dimension:tuple, texto:str,
 
     return boton
 
+def mostrar_pista_texto(ventana:pg.surface, diccionario_rondas:dict, fuente:tuple, clave_pista:str):
+    """Muestra una pista de texto en pantalla
+
+    Args:
+        ventana (pg.surface): Ventana de pygame
+        diccionario_rondas (dict): Diccionario de las rondas
+        fuente (tuple): Fuente de pygame
+        clave_pista (str): Clave del diccionario para obtener la pista (ej: "continente", "comida")
+    """    
+    pista = crear_boton(ventana, (200, 100), (400, 400), diccionario_rondas["lista_palabras"][diccionario_rondas["indice_actual"]][clave_pista], fuente, "black", "salmon")
+    dibujar_boton(pista)
+    pg.display.update()
+    pg.time.wait(5000)
+
 def pista_continente(ventana:pg.surface, diccionario_rondas:dict, fuente:tuple):
     """Funcion que se encarga de mostrar la pista del continente
 
@@ -171,10 +185,7 @@ def pista_continente(ventana:pg.surface, diccionario_rondas:dict, fuente:tuple):
         diccionario_rondas (dict): Diccionario de las rondas
         fuente (tuple): Fuente de pygame
     """    
-    pista = crear_boton(ventana, (200, 100), (400, 400), diccionario_rondas["lista_palabras"][diccionario_rondas["indice_actual"]]["continente"], fuente, "black", "salmon")
-    dibujar_boton(pista)
-    pg.display.update()
-    pg.time.wait(5000)
+    mostrar_pista_texto(ventana, diccionario_rondas, fuente, "continente")
 
 def pista_comida(ventana:pg.surface,diccionario_rondas:dict,fuente:tuple):
     """Funcion que se encarga de mostrar la pista de la comida
@@ -184,10 +195,7 @@ def pista_comida(ventana:pg.surface,diccionario_rondas:dict,fuente:tuple):
         diccionario_rondas (dict): Diccionario de las rondas
         fuente (tuple): Fuente de pygame
     """    
-    pista = crear_boton(ventana, (200, 100), (400, 400), diccionario_rondas["lista_palabras"][diccionario_rondas["indice_actual"]]["comida"], fuente, "black", "salmon")
-    dibujar_boton(pista)
-    pg.display.update()
-    pg.time.wait(5000)
+    mostrar_pista_texto(ventana, diccionario_rondas, fuente, "comida")
 
 def crear_carteles (ventana:pg.surface,SIZE_WINDOW:tuple,fuentes:tuple) -> dict:
     """Funcion que se encarga de crear los carteles
