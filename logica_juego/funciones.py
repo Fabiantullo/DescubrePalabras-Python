@@ -120,7 +120,7 @@ def recuperar_letras_no_acertadas(palabra: dict, indices_acertados: set) -> list
     """
     letras_no_acertadas = []
     for i in range(len(palabra["pais"])):
-        if i not in indices_acertados:
+        if validar_indice_en_lista(i, indices_acertados):
             letras_no_acertadas.append(i)
             print(letras_no_acertadas)
     return letras_no_acertadas
@@ -140,12 +140,26 @@ def verificar_que_la_letra_no_se_haya_adivinado(letra: str, matriz: list, indice
     validacion = True
     for i in range(len(matriz)):
         for j in range(len(matriz[i])):
-            if letra == matriz[i][j] and j in indices_acertados:
+            if letra == matriz[i][j] and not validar_indice_en_lista(j, indices_acertados):
                 validacion = False
     return validacion
 
 
+def validar_indice_en_lista(indice: int, lista: set) -> bool:
+    """Valida si un indice se encuentra en una lista
 
+    Args:
+        indice (int): Indice a validar
+        lista (list): Lista en la que se quiere validar el indice
+
+    Returns:
+        bool: True si el indice no se encuentra en la lista, False si se encuentra
+    """
+    validacion = True
+    for elemento in lista:
+        if elemento == indice:
+            validacion = False
+    return validacion
 
 def toggle_sonido(diccionario_partida:dict, carteles:dict, activar:bool):
     """Activa o desactiva el sonido
