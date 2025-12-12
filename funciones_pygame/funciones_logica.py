@@ -62,6 +62,29 @@ def reiniciar_variables (diccionario_rondas:dict,palabras:dict, dificultades:lis
         diccionario_rondas["lista_intentos"][i] = 0
         
         
+def mostrar_resultado_ronda(diccionario_partidas:dict, ventana:tuple, pais:str, mensaje:str, imagen_path:str, color_texto:str, color_fondo:str, sonido_path:str):
+    """Muestra el resultado de una ronda (victoria o derrota)
+
+    Args:
+        diccionario_partidas (dict): Diccionario con los datos de la partida
+        ventana (tuple): Dimensiones de la ventana
+        pais (str): Nombre del pais correcto
+        mensaje (str): Mensaje a mostrar
+        imagen_path (str): Ruta de la imagen de resultado
+        color_texto (str): Color del texto del resultado
+        color_fondo (str): Color de fondo del resultado
+        sonido_path (str): Ruta del sonido a reproducir
+    """    
+    cartel_pais = crear_boton(diccionario_partidas["ventana"],(0,0),(ventana[0],ventana[1]),f"{mensaje} {pais}",("Arial", 40),"black",(164, 187, 254))
+    dibujar_boton(cartel_pais)
+    pg.display.update()
+    pg.time.wait(2000)
+    cartel_resultado = crear_boton(diccionario_partidas["ventana"],(0,0),(ventana[0],ventana[1]),"",("Arial", 30),color_texto,color_fondo, imagen=imagen_path)
+    dibujar_boton(cartel_resultado)
+    if diccionario_partidas["sonido"]:
+        pg.mixer_music.load(sonido_path)
+        pg.mixer_music.play()
+
 def verificar_gano(diccionario_partidas:dict,diccionario_rondas:dict,entrada:dict,palabras:dict, ventana:pg.Surface, bandera:bool)->bool:
     """Funcion que se encarga de verificar si el jugador gano
 
@@ -76,18 +99,19 @@ def verificar_gano(diccionario_partidas:dict,diccionario_rondas:dict,entrada:dic
     Returns:
         bool: Bandera que indica si el jugador gano
     """    
-    cartel_gano = crear_boton(diccionario_partidas["ventana"],(0,0),(ventana[0],ventana[1]),"",("Arial", 30),"goldenrod1","mediumturquoise", imagen= os.path.join("images", "gano.png"))
     if diccionario_rondas["lista_palabras"][diccionario_rondas["indice_actual"]]["pais"] == entrada["Texto"]:
         diccionario_partidas["cantidad_palabras_acertadas"][0] += 1
         bandera = True
-        cartel_pais =crear_boton(diccionario_partidas["ventana"],(0,0),(ventana[0],ventana[1]),f"Acertaste el pais era {diccionario_rondas['lista_palabras'][diccionario_rondas['indice_actual']]['pais']}",("Arial", 40),"black",(164, 187, 254))
-        dibujar_boton(cartel_pais)
-        pg.display.update()
-        pg.time.wait(2000)
-        dibujar_boton(cartel_gano)
-        if diccionario_partidas["sonido"]:
-            pg.mixer_music.load(os.path.join("sounds", "gano.mp3"))
-            pg.mixer_music.play()
+        mostrar_resultado_ronda(
+            diccionario_partidas,
+            ventana,
+            diccionario_rondas['lista_palabras'][diccionario_rondas['indice_actual']]['pais'],
+            "Acertaste el pais era",
+            os.path.join("images", "gano.png"),
+            "goldenrod1",
+            "mediumturquoise",
+            os.path.join("sounds", "gano.mp3")
+        )
     return bandera
 
 def verificar_perdio (diccionario_rondas:dict,diccionario_partidas:dict,ventana:pg.surface, entrada:dict, bandera:bool)->bool:
@@ -103,20 +127,19 @@ def verificar_perdio (diccionario_rondas:dict,diccionario_partidas:dict,ventana:
     Returns:
         bool: Bandera que indica si el jugador perdio
     """    
-    cartel_perdio = crear_boton(diccionario_partidas["ventana"],(0,0),(ventana[0],ventana[1]),"",("Arial", 30),"Red3", "seashell4",imagen=os.path.join("images", "perdio.webp"))
     if diccionario_rondas["lista_intentos"][diccionario_rondas["indice_actual"]] == 6 and diccionario_rondas["lista_palabras"][diccionario_rondas["indice_actual"]]["pais"] != entrada["Texto"]:
         diccionario_partidas["cantidad_palabras_falladas"][0] += 1
         bandera = True
-        cartel_pais =crear_boton(diccionario_partidas["ventana"],(0,0),(ventana[0],ventana[1]),f"Fallaste perro era {diccionario_rondas['lista_palabras'][diccionario_rondas['indice_actual']]['pais']}",("Arial", 40),"black",(164, 187, 254))
-        dibujar_boton(cartel_pais)
-        pg.display.update()
-        pg.time.wait(2000)
-        dibujar_boton(cartel_perdio)
-        if diccionario_partidas["sonido"]:
-
-            pg.mixer_music.load(os.path.join("sounds", "perdio.mp3"))
-            pg.mixer_music.play()
-            
+        mostrar_resultado_ronda(
+            diccionario_partidas,
+            ventana,
+            diccionario_rondas['lista_palabras'][diccionario_rondas['indice_actual']]['pais'],
+            "Fallaste perro era",
+            os.path.join("images", "perdio.webp"),
+            "Red3",
+            "seashell4",
+            os.path.join("sounds", "perdio.mp3")
+        )
     return bandera
         
 def reiniciar_ronda(bandera:bool, diccionario_rondas:dict, diccionario_partidas:dict, palabras:dict):
