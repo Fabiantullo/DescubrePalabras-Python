@@ -1,4 +1,3 @@
-import re
 import json
 
 
@@ -15,12 +14,12 @@ def obtener_lista_palabras(path: str = "palabras.csv") -> list:
     lista = []
 
     with open(path, "r", encoding="utf-8") as archivo:
-        archivo.readline().split(",")
+        archivo.readline()  # Skip header - optimized: removed unnecessary split
         for linea in archivo:
-
-            lectura = re.split(",|\n", linea)
-            for i in range(len(lectura)):
-                lectura[i] = lectura[i].lower()
+            # Optimized: Use strip() and split() instead of regex for better performance
+            lectura = linea.strip().split(",")
+            # Optimized: Use list comprehension instead of manual loop
+            lectura = [campo.lower() for campo in lectura]
             lista.append(lectura)
     lista = normalizar_en_diccionario(lista)
     return lista
@@ -35,16 +34,16 @@ def normalizar_en_diccionario(palabras: list) -> list[dict]:
     Returns:
         list[dict]: Lista de diccionarios con las palabras normalizadas
     """    
-    diccionario = []
-
-    for palabra in palabras:
-        diccionario_temporal = {}
-        diccionario_temporal["pais"] = palabra[0]
-        diccionario_temporal["continente"] = palabra[2]
-        diccionario_temporal["caracteres"] = int(palabra[1])
-        diccionario_temporal["comida"] = palabra[3]
-        diccionario.append(diccionario_temporal)
-
+    # Optimized: Use list comprehension instead of manual loop with append
+    diccionario = [
+        {
+            "pais": palabra[0],
+            "continente": palabra[2],
+            "caracteres": int(palabra[1]),
+            "comida": palabra[3]
+        }
+        for palabra in palabras
+    ]
     return diccionario
 
 
@@ -185,11 +184,14 @@ def recuperar_puntuacion_mas_alta(path: str) -> tuple[int, str]:
     puntuaciones = comprobar_si_existe_archivo(path)
     puntuacion_mas_alta = 0
     nombre = ""
-    if len(puntuaciones) != 0:
-        for puntuacion in puntuaciones:
-            if puntuacion["puntaje_total"] > puntuacion_mas_alta:
-                puntuacion_mas_alta = puntuacion["puntaje_total"]
-                nombre = puntuacion["nombre"]
+    # Optimized: Early return if no puntuaciones, removed unnecessary len() check
+    if not puntuaciones:
+        return puntuacion_mas_alta, nombre
+    
+    for puntuacion in puntuaciones:
+        if puntuacion["puntaje_total"] > puntuacion_mas_alta:
+            puntuacion_mas_alta = puntuacion["puntaje_total"]
+            nombre = puntuacion["nombre"]
                 
     return puntuacion_mas_alta, nombre
     

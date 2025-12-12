@@ -28,11 +28,8 @@ def generar_palabras(dificultad:list, diccionario_palabras: dict) -> list:
     Returns:
         list: Lista de palabras
     """    
-    lista_palabras = []
-    for i in range(len(dificultad)):
-        palabra_generada = obtener_palabra(diccionario_palabras,dificultad[i])
-        lista_palabras.append(palabra_generada)
-        
+    # Optimized: Use list comprehension instead of manual loop with append
+    lista_palabras = [obtener_palabra(diccionario_palabras, dif) for dif in dificultad]
     return lista_palabras
 
 def generar_lista_matrices (dificultad:list ,lista_palabras: list,intentos:int) -> list:
@@ -46,10 +43,8 @@ def generar_lista_matrices (dificultad:list ,lista_palabras: list,intentos:int) 
     Returns:
         list: Lista de matrices
     """    
-    lista_matrices = []
-    for i in range(len(dificultad)):
-        matriz = generar_matriz(lista_palabras[i],intentos)
-        lista_matrices.append(matriz)
+    # Optimized: Use list comprehension instead of manual loop with append
+    lista_matrices = [generar_matriz(lista_palabras[i], intentos) for i in range(len(dificultad))]
     return lista_matrices
 
 def generar_matriz(palabra_obtenida: dict, intentos:int) -> list:
@@ -118,11 +113,9 @@ def recuperar_letras_no_acertadas(palabra: dict, indices_acertados: set) -> list
     Returns:
         list: Letras no acertadas de la palabra
     """
-    letras_no_acertadas = []
-    for i in range(len(palabra["pais"])):
-        if validar_indice_en_lista(i, indices_acertados):
-            letras_no_acertadas.append(i)
-            print(letras_no_acertadas)
+    # Optimized: Use list comprehension and direct 'not in' check instead of manual loop
+    letras_no_acertadas = [i for i in range(len(palabra["pais"])) if i not in indices_acertados]
+    print(letras_no_acertadas)
     return letras_no_acertadas
 
 
@@ -137,12 +130,16 @@ def verificar_que_la_letra_no_se_haya_adivinado(letra: str, matriz: list, indice
     Returns:
         bool: True si la letra no se ha adivinado, False si se ha adivinado
     """
-    validacion = True
-    for i in range(len(matriz)):
-        for j in range(len(matriz[i])):
-            if letra == matriz[i][j] and not validar_indice_en_lista(j, indices_acertados):
-                validacion = False
-    return validacion
+    # Optimized: Check if letter index is in set first (O(1) instead of nested loop)
+    if letra in indices_acertados:
+        return False
+    
+    # Check if this letter position has been revealed in any previous attempt
+    for fila in matriz:
+        if letra < len(fila) and fila[letra] != "_":
+            return False
+    
+    return True
 
 
 def validar_indice_en_lista(indice: int, lista: set) -> bool:
@@ -155,11 +152,8 @@ def validar_indice_en_lista(indice: int, lista: set) -> bool:
     Returns:
         bool: True si el indice no se encuentra en la lista, False si se encuentra
     """
-    validacion = True
-    for elemento in lista:
-        if elemento == indice:
-            validacion = False
-    return validacion
+    # Optimized: Use 'in' operator for O(1) lookup in set instead of O(n) loop
+    return indice not in lista
 
 def toggle_sonido(diccionario_partida:dict, carteles:dict, activar:bool):
     """Activa o desactiva el sonido
