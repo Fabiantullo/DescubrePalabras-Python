@@ -3,6 +3,7 @@ import pygame as pg
 from funciones_pygame.funciones_logica import *
 from archivo.funciones_archivo import recuperar_puntuacion_mas_alta
 from configs import PISTAS_IMAGENES
+from logica_juego.funciones_del_main import reiniciar_estado_partida
 
 
 def manejar_eventos(ventana: pg.Surface, boton_modos: list, entrada: dict, diccionario_ronda:dict, diccionario_partida:dict, palabras:dict, lista_botones_pistas:list[dict], carteles: dict[dict], MOVE_RECT_EVENT: pg.event, direccion: list[int], velocidad: list[int],evento_post: pg.event) -> bool:
@@ -216,14 +217,7 @@ def manejar_reiniciar_juego(carteles: pg.Surface, diccionario_partida:dict, even
         diccionario_rondas (dict): Diccionario de ronda
     """    
     if carteles["jugar_otra_vez"]["rectangulo"].collidepoint(evento.pos) and carteles["jugar_otra_vez"]["Presionado"]:
-        diccionario_partida["bandera_pantalla_final"] = False
-        diccionario_partida["bandera_archivo_guardado"] = False
-        diccionario_partida["nombre_usuario"] = None
-        diccionario_partida["cantidad_palabras_acertadas"] = [0]
-        diccionario_partida["cantidad_palabras_falladas"] = [0]
-        diccionario_partida["cantidad_intentos_actuales"] = 0
-        diccionario_partida["tiempo_rondas"] = [0]
-        diccionario_partida["puntaje"] = [0]
+        reiniciar_estado_partida(diccionario_partida)
         diccionario_rondas["tiempo_inicio"] = time.time()
         diccionario_partida["mayor_puntaje"],diccionario_partida["mayor_nombre"] = recuperar_puntuacion_mas_alta("puntuaciones.json")
         

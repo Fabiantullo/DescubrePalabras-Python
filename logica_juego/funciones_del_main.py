@@ -42,6 +42,22 @@ def comprobar_estado_juego(diccionario_partida:dict, diccionario_ronda:dict, ven
         dibujar_botones_main(ventana, diccionario_ronda, lista_boton_pistas, entrada, lista_botones_modos, fuentes)
 
     
+def reiniciar_estado_partida(diccionario_partida:dict):
+    """Reinicia el estado de la partida a sus valores iniciales
+
+    Args:
+        diccionario_partida (dict): Diccionario con los datos de la partida
+    """    
+    diccionario_partida["puntaje"] = [0]
+    diccionario_partida["cantidad_palabras_acertadas"] = [0]
+    diccionario_partida["cantidad_palabras_falladas"] = [0]
+    diccionario_partida["cantidad_intentos_actuales"] = 0
+    diccionario_partida["tiempo_rondas"] = [0]
+    diccionario_partida["bandera_pantalla_final"] = False
+    diccionario_partida["nombre_usuario"] = None
+    diccionario_partida["bandera_archivo_guardado"] = False
+
+    
 def crear_diccionario_partida(ventana:pg.surface):
     """Funcion que se encarga de crear el diccionario de la partida
 
@@ -52,20 +68,13 @@ def crear_diccionario_partida(ventana:pg.surface):
         dict: Devuelve un diccionario con los datos de la partida
     """    
     diccionario_partida = {}
-    diccionario_partida["puntaje"] = [0]
-    diccionario_partida["cantidad_palabras_acertadas"] = [0]
-    diccionario_partida["cantidad_palabras_falladas"] = [0]
-    diccionario_partida["cantidad_intentos_actuales"] = 0
-    diccionario_partida["tiempo_rondas"] = [0]
-    diccionario_partida["bandera_pantalla_final"] = False
-    diccionario_partida["nombre_usuario"] = None
-    diccionario_partida["bandera_archivo_guardado"] = False
-    diccionario_partida["bandera_puntuo_por_tiempo"] = False
     diccionario_partida["ventana"] = ventana
     diccionario_partida["estado_juego"] = "pantalla_inicio"
     diccionario_partida["sonido"] = False
     diccionario_partida["tiempo_total"] = 0
     diccionario_partida["puntaje_total"] = 0
+    diccionario_partida["bandera_puntuo_por_tiempo"] = False
+    reiniciar_estado_partida(diccionario_partida)
     return diccionario_partida
 
 def crear_diccionario_ronda(DIFICULTYS:list, palabras:dict, TRYS:int) -> dict:
